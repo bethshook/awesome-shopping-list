@@ -3,13 +3,41 @@ import styled from "styled-components";
 import './App.css';
 import ListGroup from "./components/ListGroup";
 
-const Wrapper = styled.main``;
-const FlexSection = styled.section``;
-const FlexItem = styled.div``;
+const BREAKPOINTS = {
+  SM: '480px',
+  MD: '768px',
+  LG: '1024px',
+};
+
+const Wrapper = styled.main`
+  padding: 0 2rem;
+  max-width: 80rem;
+  margin: 0 auto;
+  
+  @media (min-width: ${BREAKPOINTS.LG}) {
+    width: 80%;
+  }
+`;
+
+const FlexSection = styled.section`
+  @media (min-width: ${BREAKPOINTS.MD}) {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 -3rem;
+  }
+`;
+
+const FlexItem = styled.div`
+  flex: 1;
+  margin: 0 3rem;
+`;
+
 const Input = styled.input``;
 const Button = styled.button``;
 
-const H1 = styled.h1``;
+const H1 = styled.h1`
+  text-align: center;
+`;
 const H2 = styled.h2``;
 
 function App() {
@@ -21,11 +49,6 @@ function App() {
   const [categories, setCategories] = useState(["uncategorized"]);
   const [itemsByCategory, setItemsByCategory] = useState({ uncategorized: [] });
   const [subtotal, setSubtotal] = useState(0);
-
-  const breakpoints = {
-    xs: '480px',
-    sm: '768px',
-  };
 
   useEffect(() => {
     // Reset visible pending items on pending items change.
@@ -92,16 +115,19 @@ function App() {
     <Wrapper>
       <H1>Awesome Shopping List</H1>
       <FlexSection>
-        <Input
-          value={inputValue}
-          placeholder="Item name"
-          onChange={(e) => handleChange(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleAdd();
-          }}
-        />
-        <Button onClick={() => handleAdd()}>Create</Button>
-        Subtotal (USD): ${subtotal}.00
+        <FlexItem>
+          <Input
+            value={inputValue}
+            aria-label="Item name"
+            placeholder="Item name"
+            onChange={(e) => handleChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleAdd();
+            }}
+          />
+          <Button onClick={() => handleAdd()}>Create</Button>
+        </FlexItem>
+        <FlexItem>Subtotal (USD): ${subtotal}.00</FlexItem>
       </FlexSection>
 
       <FlexSection>

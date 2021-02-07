@@ -6,38 +6,45 @@ const Wrapper = styled.div``;
 const Input = styled.input``;
 
 function EditForm({ title, item, itemSaveHandler, closeHandler }) {
-    const [updatedItem, setUpdatedItem] = useState({});
+  const [updatedItem, setUpdatedItem] = useState({});
 
-    useEffect(() => {
-        setUpdatedItem(item);
-    }, [item]);
+  useEffect(() => {
+    setUpdatedItem(item);
+  }, [item]);
 
   return (
     <Wrapper>
       <h4>{item.label}</h4>
       <p>{item.label}</p>
-      Category:
+      <label htmlFor="category">Category:</label>
       <Input
+        id="category"
         placeholder={item.category}
-        onChange={e => setUpdatedItem({...updatedItem, category: e.target.value})}
-        onKeyDown={(e) => {
-          // if (e.key === "Enter") handleAdd();
-        }}
+        onChange={(e) =>
+          setUpdatedItem({ ...updatedItem, category: e.target.value })
+        }
       />
-      Quantity:
+      <label htmlFor="quantity">Quantity:</label>
       <Input
+        id="quantity"
         placeholder={item.qty}
         type="number"
-        onChange={e => setUpdatedItem({...updatedItem, qty: e.target.value})}
+        onChange={(e) =>
+          setUpdatedItem({ ...updatedItem, qty: e.target.value })
+        }
       />
-      Price:
+      <label htmlFor="price">Price:</label>
+
       <Input
+        id="price"
         placeholder={item.price}
         type="number"
-        onChange={e => setUpdatedItem({...updatedItem, price: e.target.value})}
+        onChange={(e) =>
+          setUpdatedItem({ ...updatedItem, price: e.target.value })
+        }
       />
-        <button onClick={() => itemSaveHandler(updatedItem)}>Save</button>
-        <button onClick={() => closeHandler()}>Close me</button>
+      <button onClick={() => itemSaveHandler(updatedItem)}>Save</button>
+      <button onClick={() => closeHandler()}>Close me</button>
     </Wrapper>
   );
 }
