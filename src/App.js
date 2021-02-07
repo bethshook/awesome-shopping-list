@@ -10,18 +10,30 @@ const Button = styled.button``;
 
 const H1 = styled.h1``;
 const H2 = styled.h2``;
+const H3 = styled.h3``;
 
 function App() {
   const [inputValue, setInputValue] = useState('');
   const [pendingItems, setPendingItems] = useState([]);
   const [visiblePendingItems, setVisiblePendingItems] = useState([]);
   const [removedItems, setRemovedItems] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [itemsByCategory, setItemsByCategory] = useState({'uncategorized': []});
 
   useEffect(() => {
     // Changes made to pending reset visible pending items.
     setVisiblePendingItems(pendingItems);
-  }, [pendingItems])
+  }, [pendingItems]);
 
+  useEffect(() => {
+    // Update sorted visible items when visible items changes.
+    const categoryObj = {};
+    categories.forEach(cat => categoryObj[cat] = []);
+    visiblePendingItems.forEach(i => categoryObj[i.category].push(i));
+    setItemsByCategory(categoryObj);
+  }, [visiblePendingItems]);
+
+  // Handle input change.
   const handleChange = input => {
     setInputValue(input);
     if (!input) {
@@ -33,6 +45,7 @@ function App() {
     }
   }
 
+  // Handle adding new item.
   const handleAdd = () => {
     setPendingItems([...pendingItems, {label: inputValue, qty: 1, price: 0, category: 'uncategorized'}]);
     setInputValue('');
@@ -56,18 +69,24 @@ function App() {
       <FlexSection>
         <FlexItem>
           <H2>Pending</H2>
-          {/* For each category create a list group */}
-          {/* Mapped categories */}
-          <ul>
-            {visiblePendingItems.map(item => (
-              <li onClick={() => {
-                setPendingItems(pendingItems.filter(i => i !== item));
-                setRemovedItems([...removedItems, item]);
-              }}>
-                {item.qty} {item.label} <button>edit</button>
-              </li>
-            ))}
-          </ul>
+          {categories.map(cat => {
+            return itemsByCategory[cat].length ? (
+              <>
+                <H3>{cat}</H3>
+                {itemsByCategory[cat].map(item => (
+                  <>
+                    <li onClick={() => {
+                      setPendingItems(pendingItems.filter(i => i !== item));
+                      setRemovedItems([...removedItems, item]);
+                    }}>
+                      {item.qty} {item.label}
+                    </li>
+                    <button onClick={() => console.log(item)}>edit</button>
+                  </>
+                ))
+              </>
+            ) : null;
+          })}
         </FlexItem>
         <FlexItem>
           <H2>Crossed Off</H2>
