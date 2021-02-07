@@ -15,8 +15,10 @@ function App() {
   const [inputValue, setInputValue] = useState('');
   const [pendingItems, setPendingItems] = useState([]);
   const [visiblePendingItems, setVisiblePendingItems] = useState([]);
+  const [removedItems, setRemovedItems] = useState([]);
 
   useEffect(() => {
+    // Changes made to pending reset visible pending items.
     setVisiblePendingItems(pendingItems);
   }, [pendingItems])
 
@@ -25,18 +27,29 @@ function App() {
     if (!input) {
       setVisiblePendingItems(pendingItems);
     } else {
-      const matchingPending = pendingItems.filter(item => item.includes(input));
+      // Filter pending items for those that match search.
+      const matchingPending = pendingItems.filter(item => item.label.includes(input));
       setVisiblePendingItems(matchingPending);
     }
   }
+
+  const handleAdd = () => {
+    setPendingItems([...pendingItems, {label: inputValue, qty: 1, price: 0, category: 'uncategorized'}]);
+    setInputValue('');
+  } 
 
   return (
     <Wrapper>
       <H1>Awesome Shopping List App</H1>
       <FlexSection>
         {/* Input and subtotal go at top */}
-        <Input value={inputValue} placeholder="Item name" onChange={(e)  => handleChange(e.target.value)}/>
-        <Button onClick={() => setPendingItems([...pendingItems, inputValue])}>Create</Button>
+        <Input 
+          value={inputValue} 
+          placeholder="Item name" 
+          onChange={(e)  => handleChange(e.target.value)}
+          onKeyDown={e => {if (e.key === "Enter") handleAdd()}}
+        />
+        <Button onClick={() => handleAdd()}>Create</Button>
         Subtotal (USD): $0.00
       </FlexSection>
 
@@ -47,7 +60,12 @@ function App() {
           {/* Mapped categories */}
           <ul>
             {visiblePendingItems.map(item => (
-              <li>{item}</li>
+              <li onClick={() => {
+                setPendingItems(pendingItems.filter(i => i !== item));
+                setRemovedItems([...removedItems, item]);
+              }}>
+                {item.qty} {item.label} <button>edit</button>
+              </li>
             ))}
           </ul>
         </FlexItem>
@@ -55,6 +73,16 @@ function App() {
           <H2>Crossed Off</H2>
           {/* Crossed off items go here */}
           {/* Only one list group bc no categories shown */}
+          <ul>
+            {removedItems.map(item => (
+              <li onClick={() => {
+                setRemovedItems(removedItems.filter(i => i !== item));
+                setPendingItems([...pendingItems, item]);
+              }}>
+                {item.qty} {item.label} ${item.price}.00
+              </li>
+            ))}
+          </ul>
           <ListGroup />
         </FlexItem>
       </FlexSection>
