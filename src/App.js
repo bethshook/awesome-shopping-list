@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import styled from 'styled-components';
+
+const Wrapper = styled.div``;
+const FlexSection = styled.div``;
+const FlexItem = styled.div``;
+const ListGroup = styled.div``;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Wrapper>
+      <h1>Awesome Shopping List App</h1>
+      <FlexSection>
+        {/* Input and subtotal go at top */}
+      </FlexSection>
+
+      <FlexSection>
+        <FlexItem>
+          {/* Pending items go here */}
+          {/* Mapped ListGroups */}
+        </FlexItem>
+        <FlexItem>
+          {/* Crossed off items go here */}
+          {/* Only one list group bc no categories shown */}
+          <ListGroup />
+        </FlexItem>
+      </FlexSection>
+
+    </Wrapper>
   );
 }
 
