@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import './App.css';
 import ListGroup from "./components/ListGroup";
 
 const Wrapper = styled.main``;
@@ -20,6 +21,11 @@ function App() {
   const [categories, setCategories] = useState(["uncategorized"]);
   const [itemsByCategory, setItemsByCategory] = useState({ uncategorized: [] });
   const [subtotal, setSubtotal] = useState(0);
+
+  const breakpoints = {
+    xs: '480px',
+    sm: '768px',
+  };
 
   useEffect(() => {
     // Reset visible pending items on pending items change.
@@ -84,7 +90,7 @@ function App() {
 
   return (
     <Wrapper>
-      <H1>Awesome Shopping List App</H1>
+      <H1>Awesome Shopping List</H1>
       <FlexSection>
         <Input
           value={inputValue}

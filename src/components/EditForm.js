@@ -29,18 +29,12 @@ function EditForm({ title, item, itemSaveHandler, closeHandler }) {
         placeholder={item.qty}
         type="number"
         onChange={e => setUpdatedItem({...updatedItem, qty: e.target.value})}
-        onKeyDown={(e) => {
-          // if (e.key === "Enter") handleAdd();
-        }}
       />
       Price:
       <Input
         placeholder={item.price}
         type="number"
         onChange={e => setUpdatedItem({...updatedItem, price: e.target.value})}
-        onKeyDown={(e) => {
-          // if (e.key === "Enter") handleAdd();
-        }}
       />
         <button onClick={() => itemSaveHandler(updatedItem)}>Save</button>
         <button onClick={() => closeHandler()}>Close me</button>
