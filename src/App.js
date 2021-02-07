@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ListGroup from "./components/ListGroup";
 
@@ -22,11 +22,12 @@ function App() {
   const [subtotal, setSubtotal] = useState(0);
 
   useEffect(() => {
-    // Changes made to pending reset visible pending items.
+    // Reset visible pending items on pending items change.
     setVisiblePendingItems(pendingItems);
 
+    // Update subtotal on pending items change.
     let subtotalHolder = 0;
-    pendingItems.forEach(item => subtotalHolder += (item.price * item.qty));
+    pendingItems.forEach((item) => (subtotalHolder += item.price * item.qty));
     setSubtotal(subtotalHolder);
   }, [pendingItems]);
 
@@ -56,10 +57,29 @@ function App() {
   const handleAdd = () => {
     setPendingItems([
       ...pendingItems,
-      { label: inputValue, qty: 1, price: 0, category: "uncategorized", id: itemCount},
+      {
+        label: inputValue,
+        qty: 1,
+        price: 0,
+        category: "uncategorized",
+        id: itemCount,
+      },
     ]);
     setItemCount(itemCount + 1);
     setInputValue("");
+  };
+
+  // Handle editing item.
+  const handleEdit = (newItem) => {
+    const newCategory = newItem.category.toLowerCase();
+    if (categories.indexOf(newCategory) < 0) {
+      setCategories([...categories, newCategory]);
+      setItemsByCategory({ ...itemsByCategory, newCategory: [] });
+    }
+    const updatedPending = pendingItems.map((pending) => {
+      return pending.id === newItem.id ? newItem : pending;
+    });
+    setPendingItems(updatedPending);
   };
 
   return (
@@ -81,30 +101,19 @@ function App() {
       <FlexSection>
         <FlexItem>
           <H2>Pending</H2>
-          {categories.map((cat) => (
-              itemsByCategory[cat] && itemsByCategory[cat].length ? (
-                <ListGroup
-                  key={cat}
-                  title={cat}
-                  items={itemsByCategory[cat]}
-                  itemClickHandler={(item) => {
-                    setPendingItems(pendingItems.filter((i) => i !== item));
-                    setRemovedItems([...removedItems, item]);
-                  }}
-                  itemEditHandler={(newItem) => {
-                    const newCategory = newItem.category.toLowerCase();
-                    if (categories.indexOf(newCategory) < 0) {
-                      setCategories([...categories, newCategory]);
-                      setItemsByCategory({...itemsByCategory, newCategory: []})
-                    };
-                    const updatedPending = pendingItems.map(pending => {
-                      return pending.id === newItem.id ? newItem : pending;
-                    })
-                    setPendingItems(updatedPending);                    
-                  }}
-                />
-              ) : null
-            )
+          {categories.map((cat) =>
+            itemsByCategory[cat] && itemsByCategory[cat].length ? (
+              <ListGroup
+                key={cat}
+                title={cat}
+                items={itemsByCategory[cat]}
+                itemClickHandler={(item) => {
+                  setPendingItems(pendingItems.filter((i) => i !== item));
+                  setRemovedItems([...removedItems, item]);
+                }}
+                itemEditHandler={(newItem) => handleEdit(newItem)}
+              />
+            ) : null
           )}
         </FlexItem>
         <FlexItem>
