@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Modal from "styled-react-modal";
+import EditForm from "./EditForm";
 
 const Wrapper = styled.div``;
 const H3 = styled.h3``;
@@ -23,9 +24,11 @@ function ListGroup({ title, items, itemClickHandler, itemEditHandler }) {
     return labelA > labelB ? 1 : labelB > labelA ? -1 : 0;
   };
 
+  const formattedTitle = title ? title[0].toUpperCase() + title.substring(1) : "";
+
   return (
     <Wrapper>
-      <H3>{title}</H3>
+      {formattedTitle && <H3>{formattedTitle}</H3>}
       <List>
         {items.sort(sortByLabel).map((item) => (
           <React.Fragment key={item.id}>
@@ -40,8 +43,14 @@ function ListGroup({ title, items, itemClickHandler, itemEditHandler }) {
                   onBackgroundClick={toggleModal}
                   onEscapeKeydown={toggleModal}
                 >
-                  <p>{item.label} {item.category} {item.price}</p>
-                  <button onClick={toggleModal}>Close me</button>
+                  <EditForm 
+                    item={item} 
+                    itemSaveHandler={(updatedItem) => {
+                        itemEditHandler(updatedItem)
+                        toggleModal();
+                    }}
+                    closeHandler={() => toggleModal()}
+                    />
                 </StyledModal>
               </>
             ) : null}

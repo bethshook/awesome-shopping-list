@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import ListGroup from "./components/ListGroup";
 
@@ -19,10 +19,15 @@ function App() {
   const [removedItems, setRemovedItems] = useState([]);
   const [categories, setCategories] = useState(["uncategorized"]);
   const [itemsByCategory, setItemsByCategory] = useState({ uncategorized: [] });
+  const [subtotal, setSubtotal] = useState(0);
 
   useEffect(() => {
     // Changes made to pending reset visible pending items.
     setVisiblePendingItems(pendingItems);
+
+    let subtotalHolder = 0;
+    pendingItems.forEach(item => subtotalHolder += (item.price * item.qty));
+    setSubtotal(subtotalHolder);
   }, [pendingItems]);
 
   useEffect(() => {
@@ -61,7 +66,6 @@ function App() {
     <Wrapper>
       <H1>Awesome Shopping List App</H1>
       <FlexSection>
-        {/* Input and subtotal go at top */}
         <Input
           value={inputValue}
           placeholder="Item name"
@@ -71,15 +75,14 @@ function App() {
           }}
         />
         <Button onClick={() => handleAdd()}>Create</Button>
-        Subtotal (USD): $0.00
+        Subtotal (USD): ${subtotal}.00
       </FlexSection>
 
       <FlexSection>
         <FlexItem>
           <H2>Pending</H2>
-          {categories.map((cat) => {
-            return (
-              itemsByCategory[cat].length && (
+          {categories.map((cat) => (
+              itemsByCategory[cat] && itemsByCategory[cat].length ? (
                 <ListGroup
                   key={cat}
                   title={cat}
@@ -88,11 +91,21 @@ function App() {
                     setPendingItems(pendingItems.filter((i) => i !== item));
                     setRemovedItems([...removedItems, item]);
                   }}
-                  itemEditHandler={(item) => console.log(item)}
+                  itemEditHandler={(newItem) => {
+                    const newCategory = newItem.category.toLowerCase();
+                    if (categories.indexOf(newCategory) < 0) {
+                      setCategories([...categories, newCategory]);
+                      setItemsByCategory({...itemsByCategory, newCategory: []})
+                    };
+                    const updatedPending = pendingItems.map(pending => {
+                      return pending.id === newItem.id ? newItem : pending;
+                    })
+                    setPendingItems(updatedPending);                    
+                  }}
                 />
-              )
-            );
-          })}
+              ) : null
+            )
+          )}
         </FlexItem>
         <FlexItem>
           <H2>Crossed Off</H2>
