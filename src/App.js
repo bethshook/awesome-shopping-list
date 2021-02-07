@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import ListGroup from './components/ListGroup';
 
 const Wrapper = styled.main``;
 const FlexSection = styled.section``;
 const FlexItem = styled.div``;
-const ListGroup = styled.div``;
 const Input = styled.input``;
 const Button = styled.button``;
 
 const H1 = styled.h1``;
 const H2 = styled.h2``;
-const H3 = styled.h3``;
 
 function App() {
   const [inputValue, setInputValue] = useState('');
   const [pendingItems, setPendingItems] = useState([]);
   const [visiblePendingItems, setVisiblePendingItems] = useState([]);
   const [removedItems, setRemovedItems] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(['uncategorized']);
   const [itemsByCategory, setItemsByCategory] = useState({'uncategorized': []});
 
   useEffect(() => {
@@ -70,39 +69,30 @@ function App() {
         <FlexItem>
           <H2>Pending</H2>
           {categories.map(cat => {
-            return itemsByCategory[cat].length ? (
-              <>
-                <H3>{cat}</H3>
-                {itemsByCategory[cat].map(item => (
-                  <>
-                    <li onClick={() => {
-                      setPendingItems(pendingItems.filter(i => i !== item));
-                      setRemovedItems([...removedItems, item]);
-                    }}>
-                      {item.qty} {item.label}
-                    </li>
-                    <button onClick={() => console.log(item)}>edit</button>
-                  </>
-                ))
-              </>
-            ) : null;
+            return itemsByCategory[cat].length && (
+              <ListGroup 
+                title={cat} 
+                items={itemsByCategory[cat]} 
+                itemClickHandler={(item) => {
+                  setPendingItems(pendingItems.filter(i => i !== item));
+                  setRemovedItems([...removedItems, item]);
+                }} 
+                itemEditHandler={(item) => console.log(item)}
+              />
+            );
           })}
         </FlexItem>
         <FlexItem>
           <H2>Crossed Off</H2>
-          {/* Crossed off items go here */}
-          {/* Only one list group bc no categories shown */}
-          <ul>
-            {removedItems.map(item => (
-              <li onClick={() => {
-                setRemovedItems(removedItems.filter(i => i !== item));
-                setPendingItems([...pendingItems, item]);
-              }}>
-                {item.qty} {item.label} ${item.price}.00
-              </li>
-            ))}
-          </ul>
-          <ListGroup />
+          <ListGroup 
+            title=""
+            items={removedItems} 
+            itemClickHandler={(item) => {
+              setRemovedItems(removedItems.filter(i => i !== item));
+              setPendingItems([...pendingItems, item]);
+            }} 
+            itemEditHandler={(item) => console.log(item)}
+          />
         </FlexItem>
       </FlexSection>
 
