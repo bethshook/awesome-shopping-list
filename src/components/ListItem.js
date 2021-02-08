@@ -36,7 +36,11 @@ const ItemWrapper = styled.div`
   flex-grow: 1;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
+
+  @media (min-width: ${breakpoints.md}) {
+    padding: 0 2rem;
+  }
 `;
 
 const EditButton = styled(PlainButton)`
@@ -53,10 +57,8 @@ const EditButton = styled(PlainButton)`
   }
 `;
 
-const FixedSpan = styled.span`
-`;
-
-const Emphasized = styled(FixedSpan)`
+const Emphasized = styled.span`
+  min-width: 2rem;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.darkblue};
 `;
@@ -112,7 +114,7 @@ function ListItem({ item, itemClickHandler, itemEditHandler, isPending }) {
         ) : null}
       </ItemWrapper>
     </FlexGroup>
-    <FixedSpan>${item.price}.00</FixedSpan>
+    <span>${item.price}.00</span>
   </Wrapper>
   )
 }
