@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import "./App.css";
 import ListGroup from "./components/ListGroup";
+import Button from "./components/Button";
 import breakpoints from "./utils/breakpoints";
 
 const Header = styled.header`
@@ -85,23 +86,6 @@ const Input = styled.input`
   }
 `;
 
-const Button = styled.button`
-  height: 2.5rem;
-  border-radius: 0;
-  border: none;
-  padding: 0 1rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  background: ${({ theme }) => theme.colors.blue};
-  color: ${({ theme }) => theme.colors.white};
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.darkblue};
-  }
-`;
-
 const Link = styled.a`
   color: ${({ theme }) => theme.colors.lightyellow};
   font-weight: 700;
@@ -145,7 +129,7 @@ function App() {
     let subtotalHolder = 0;
     pendingItems.forEach((item) => (subtotalHolder += item.price * item.qty));
     setSubtotal(subtotalHolder);
-  }, [pendingItems]);
+  }, [pendingItems, removedItems]);
 
   useEffect(() => {
     // Update sorted visible items when visible items changes.
@@ -157,7 +141,7 @@ function App() {
       categoryObj[i.category.toLowerCase()].push(i)
     );
     setItemsByCategory(categoryObj);
-  }, [visiblePendingItems]);
+  }, [visiblePendingItems, categories]);
 
   // Handle input change.
   const handleChange = (input) => {
@@ -234,7 +218,7 @@ function App() {
                 if (e.key === "Enter") handleAdd();
               }}
             />
-            <Button onClick={() => handleAdd()}>Create</Button>
+            <Button title="Create" clickHandler={handleAdd} />
           </InputGroup>
 
           <FlexItem>

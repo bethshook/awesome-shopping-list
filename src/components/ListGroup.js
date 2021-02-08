@@ -152,7 +152,7 @@ function ListGroup({
                   </Item>
                   {isPending ? (
                     <>
-                      <EditButton onClick={() => toggleModal()}>
+                      <EditButton onClick={toggleModal}>
                         edit
                       </EditButton>
                       <StyledModal
