@@ -121,13 +121,13 @@ function App() {
   const [subtotal, setSubtotal] = useState(0);
 
   useEffect(() => {
-    // Reset visible pending items on pending items change.
+    // Reset visible items on items change.
     setVisiblePendingItems(pendingItems);
     setVisibleRemovedItems(removedItems);
 
     // Update subtotal on pending items change.
     let subtotalHolder = 0;
-    pendingItems.forEach((item) => (subtotalHolder += item.price * item.qty));
+    pendingItems.forEach((item) => (subtotalHolder += parseFloat((item.price * item.qty).toFixed(2))));
     setSubtotal(subtotalHolder);
   }, [pendingItems, removedItems]);
 
@@ -170,7 +170,7 @@ function App() {
       {
         label: inputValue,
         qty: 1,
-        price: 0,
+        price: 0.00,
         category: "uncategorized",
         id: itemCount,
       },
@@ -223,7 +223,7 @@ function App() {
 
           <FlexItem>
             <SubtotalLabel>Subtotal (USD):</SubtotalLabel>{" "}
-            <Subtotal>${subtotal}.00</Subtotal>
+            <Subtotal>${subtotal}</Subtotal>
           </FlexItem>
         </FlexSection>
 

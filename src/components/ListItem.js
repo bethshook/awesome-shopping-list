@@ -57,8 +57,14 @@ const EditButton = styled(PlainButton)`
   }
 `;
 
-const Emphasized = styled.span`
+const FixedSpan = styled.span`
+  min-width: 3rem;
+  text-align: right;
+`;
+
+const Emphasized = styled(FixedSpan)`
   min-width: 2rem;
+  text-align: left;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.darkblue};
 `;
@@ -114,7 +120,7 @@ function ListItem({ item, itemClickHandler, itemEditHandler, isPending }) {
         ) : null}
       </ItemWrapper>
     </FlexGroup>
-    <span>${item.price}.00</span>
+    <FixedSpan>${item.price}</FixedSpan>
   </Wrapper>
   )
 }

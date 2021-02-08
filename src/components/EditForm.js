@@ -63,7 +63,7 @@ function EditForm({ item, itemSaveHandler, closeHandler }) {
   }, [item]);
 
   const validateKey = (e) => {
-    if (e.key === "e" || e.key ==="-" || e.key === ".") e.preventDefault();
+    if (e.key === "e" || e.key ==="-") e.preventDefault();
   }
 
   return (
