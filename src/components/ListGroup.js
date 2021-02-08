@@ -36,6 +36,7 @@ const HeadingRow = styled.li`
 
 const ListItem = styled.li`
   display: flex;
+  align-items: flex-end;
   justify-content: space-between;
   margin: 0.75rem 0;
   text-decoration: ${(props) => (props.isPending ? "" : "line-through")};
@@ -113,7 +114,8 @@ function ListGroup({
   isPending,
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const toggleModal = (e) => {
+  const toggleModal = () => {
+    console.log('toggling modal')
     setIsOpen(!isOpen);
   };
 
@@ -157,6 +159,7 @@ function ListGroup({
                       </EditButton>
                       <StyledModal
                         isOpen={isOpen}
+                        allowScroll
                         onBackgroundClick={toggleModal}
                         onEscapeKeydown={toggleModal}
                       >
@@ -164,7 +167,7 @@ function ListGroup({
                           item={item}
                           itemSaveHandler={(e, updatedItem) => {
                             itemEditHandler(updatedItem);
-                            toggleModal(e);
+                            toggleModal();
                           }}
                           closeHandler={toggleModal}
                         />
