@@ -40,11 +40,15 @@ const FlexGroup = styled.div`
 `;
 
 const ItemWrapper = styled.div`
-  margin: 0 2rem;
+  margin: 0 1.5rem;
   display: flex;
   flex-grow: 1;
   align-items: flex-end;
   justify-content: space-between;
+
+  @media (min-width: ${breakpoints.md}) {
+    margin: 0 2rem;
+  }
 `;
 
 const FixedSpan = styled.span`
