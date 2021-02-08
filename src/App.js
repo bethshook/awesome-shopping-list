@@ -76,7 +76,7 @@ const Input = styled.input`
   margin-bottom: 2rem;
 
   &::placeholder {
-    color: ${({theme}) => theme.colors.darkblue};
+    color: ${({theme}) => theme.colors.gray};
     font-size: 1rem;
   }
 
@@ -103,7 +103,7 @@ const Button = styled.button`
 `;
 
 const Link = styled.a`
-  color: ${({theme}) => theme.colors.lightgreen};
+  color: ${({theme}) => theme.colors.lightyellow};
   font-weight: 700;
   text-decoration: none;
   transition: all 0.1s ease;
@@ -151,7 +151,7 @@ function App() {
     categories.forEach(cat => {
       if (!categoryObj[cat]) categoryObj[cat] = [];
     });
-    visiblePendingItems.forEach((i) => categoryObj[i.category].push(i));
+    visiblePendingItems.forEach((i) => categoryObj[i.category.toLowerCase()].push(i));
     setItemsByCategory(categoryObj);
   }, [visiblePendingItems]);
 
@@ -171,6 +171,7 @@ function App() {
 
   // Handle adding new item.
   const handleAdd = () => {
+    if (!inputValue) return;
     setPendingItems([
       ...pendingItems,
       {
@@ -202,7 +203,7 @@ function App() {
     <>
     <Header>
       <div>
-        <H1>OpenList</H1>
+        <H1>StaxList</H1>
         <Intro>
           An OpenStax shopping list app by <Link href="https://github.com/bethshook" target="_blank">Beth Shook</Link>
         </Intro>

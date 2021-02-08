@@ -9,7 +9,7 @@ const Wrapper = styled.div`
   box-shadow: 0 10px 6px -6px #777;
   padding: 1.5rem;
   margin-bottom: 4rem;
-  background: ${({theme}) => theme.colors.lightyellow};
+  background: ${({ theme }) => theme.colors.lightyellow};
 
   @media (min-width: ${breakpoints.LG}) {
     margin-bottom: 2rem;
@@ -24,10 +24,20 @@ const List = styled.ul`
   list-style-type: none;
   padding: 0;
 `;
+
+const HeadingRow = styled.li`
+  font-size: .75rem;
+  padding-bottom: .25rem;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.darkgray};
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+`;
+
 const ListItem = styled.li`
   display: flex;
   justify-content: space-between;
-  margin: .5rem 0;
+  margin: 0.75rem 0;
 `;
 
 const PlainButton = styled.button`
@@ -39,45 +49,59 @@ const PlainButton = styled.button`
 `;
 
 const FlexGroup = styled.div`
-    display: flex;
-    flex-grow: 1;
+  display: flex;
+  align-items: flex-end;
+  flex-grow: 1;
 `;
 
 const Item = styled(PlainButton)`
-    text-align: left;
+  text-align: left;
 `;
 
 const ItemWrapper = styled.div`
-    margin: 0 2rem;
-    display: flex;
-    flex-grow: 1;
-    align-items: flex-end;
-    justify-content: space-between;
+  margin: 0 2rem;
+  display: flex;
+  flex-grow: 1;
+  align-items: flex-end;
+  justify-content: space-between;
 `;
 
 const EditButton = styled(PlainButton)`
   margin-left: 0.75rem;
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: ${({theme}) => theme.colors.orangered};
+  background: ${({ theme }) => theme.colors.orangered};
   border-bottom: 1px solid transparent;
+  border-radius: 1rem;
+  padding: 0.25rem 0.75rem;
   transition: border 0.1s linear;
+  color: ${({ theme }) => theme.colors.white};
   &:hover {
-      border-color: ${({theme}) => theme.colors.orangered};
   }
 `;
 
-const Emphasized = styled.span`
-  font-weight: 500;
+const FixedSpan = styled.span`
+  width: 2rem;
 `;
 
-const StyledModal = styled(Modal)`
-  width: 20rem;
-  height: 20rem;
+const Emphasized = styled(FixedSpan)`
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.darkblue};
+  width: 2rem;
+`;
+
+const StyledModal = Modal.styled`
+  padding: 3rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${props => props.theme.colors.white};
+  background-color: ${(props) => props.theme.colors.darkblue};
+  width: 80%;
+
+  @media (min-width: ${breakpoints.md}) {
+    min-width: 20rem;
+    width: auto;
+  }
 `;
 
 function ListGroup({ title, items, itemClickHandler, itemEditHandler }) {
@@ -101,6 +125,17 @@ function ListGroup({ title, items, itemClickHandler, itemEditHandler }) {
     <Wrapper>
       {formattedTitle && <H3>{formattedTitle}</H3>}
       <List>
+
+        <HeadingRow>
+          <FlexGroup>
+            <FixedSpan>Qty</FixedSpan>
+            <ItemWrapper>
+              <span>Item Name</span>
+            </ItemWrapper>
+          </FlexGroup>
+          <span>Price</span>
+        </HeadingRow>
+
         {items.sort(sortByLabel).map((item) => (
           <React.Fragment key={item.id}>
             <ListItem>
@@ -124,6 +159,7 @@ function ListGroup({ title, items, itemClickHandler, itemEditHandler }) {
                           item={item}
                           itemSaveHandler={(updatedItem) => {
                             itemEditHandler(updatedItem);
+                            setIsOpen(false);
                           }}
                           closeHandler={() => toggleModal()}
                         />
