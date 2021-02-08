@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Modal from "styled-react-modal";
-import EditForm from "./EditForm";
+import ListItem from "./ListItem";
 import breakpoints from "./../utils/breakpoints";
 
 const Wrapper = styled.div`
@@ -34,30 +33,10 @@ const HeadingRow = styled.li`
   justify-content: space-between;
 `;
 
-const ListItem = styled.li`
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin: 0.75rem 0;
-  text-decoration: ${(props) => (props.isPending ? "" : "line-through")};
-`;
-
-const PlainButton = styled.button`
-  border: none;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-  font-size: 1rem;
-`;
-
 const FlexGroup = styled.div`
   display: flex;
   align-items: flex-end;
   flex-grow: 1;
-`;
-
-const Item = styled(PlainButton)`
-  text-align: left;
 `;
 
 const ItemWrapper = styled.div`
@@ -68,42 +47,8 @@ const ItemWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const EditButton = styled(PlainButton)`
-  margin-left: 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  background: ${({ theme }) => theme.colors.orangered};
-  border-bottom: 1px solid transparent;
-  border-radius: 1rem;
-  padding: 0.25rem 0.75rem;
-  transition: border 0.1s linear;
-  color: ${({ theme }) => theme.colors.white};
-  &:hover {
-  }
-`;
-
 const FixedSpan = styled.span`
   width: 2rem;
-`;
-
-const Emphasized = styled(FixedSpan)`
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors.darkblue};
-  width: 2rem;
-`;
-
-const StyledModal = Modal.styled`
-  padding: 3rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${({ theme }) => theme.colors.darkblue};
-  width: 80%;
-
-  @media (min-width: ${breakpoints.md}) {
-    min-width: 20rem;
-    width: auto;
-  }
 `;
 
 function ListGroup({
@@ -113,12 +58,6 @@ function ListGroup({
   itemEditHandler,
   isPending,
 }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleModal = () => {
-    console.log('toggling modal')
-    setIsOpen(!isOpen);
-  };
-
   const sortByLabel = (a, b) => {
     const labelA = a.label.toUpperCase();
     const labelB = b.label.toUpperCase();
@@ -144,41 +83,13 @@ function ListGroup({
         </HeadingRow>
 
         {items.sort(sortByLabel).map((item) => (
-          <React.Fragment key={item.id}>
-            <ListItem isPending={isPending}>
-              <FlexGroup>
-                <Emphasized>{item.qty}</Emphasized>
-                <ItemWrapper>
-                  <Item onClick={() => itemClickHandler(item)}>
-                    {item.label}
-                  </Item>
-                  {isPending ? (
-                    <>
-                      <EditButton onClick={toggleModal}>
-                        edit
-                      </EditButton>
-                      <StyledModal
-                        isOpen={isOpen}
-                        allowScroll
-                        onBackgroundClick={toggleModal}
-                        onEscapeKeydown={toggleModal}
-                      >
-                        <EditForm
-                          item={item}
-                          itemSaveHandler={(e, updatedItem) => {
-                            itemEditHandler(updatedItem);
-                            toggleModal();
-                          }}
-                          closeHandler={toggleModal}
-                        />
-                      </StyledModal>
-                    </>
-                  ) : null}
-                </ItemWrapper>
-              </FlexGroup>
-              ${item.price}.00
-            </ListItem>
-          </React.Fragment>
+          <ListItem 
+            item={item} 
+            key={item.id} 
+            itemClickHandler={itemClickHandler}
+            itemEditHandler={itemEditHandler}
+            isPending={isPending}
+          />
         ))}
       </List>
     </Wrapper>

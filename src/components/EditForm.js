@@ -40,6 +40,9 @@ const StyledButton = styled(Button)`
 
 const CloseButton = styled(StyledButton)`
   background: transparent;
+  &:hover {
+    background: transparent;
+  }
 `;
 
 const Label = styled.label`
@@ -53,7 +56,15 @@ function EditForm({ item, itemSaveHandler, closeHandler }) {
 
   useEffect(() => {
     setUpdatedItem(item);
+  }, []);
+
+  useEffect(() => {
+    setUpdatedItem(item);
   }, [item]);
+
+  const validateKey = (e) => {
+    if (e.key === "e" || e.key ==="-" || e.key === ".") e.preventDefault();
+  }
 
   return (
     <Wrapper>
@@ -62,9 +73,7 @@ function EditForm({ item, itemSaveHandler, closeHandler }) {
         <Label htmlFor="category">Category</Label>
         <Input
           id="category"
-          placeholder={
-            item.category[0].toUpperCase() + item.category.substring(1)
-          }
+          value={updatedItem.category}
           onChange={(e) =>
             setUpdatedItem({ ...updatedItem, category: e.target.value })
           }
@@ -74,9 +83,10 @@ function EditForm({ item, itemSaveHandler, closeHandler }) {
         <Label htmlFor="quantity">Quantity</Label>
         <Input
           id="quantity"
-          placeholder={item.qty}
+          value={updatedItem.qty}
           type="number"
           min="0"
+          onKeyDown={validateKey}
           onChange={(e) =>
             setUpdatedItem({ ...updatedItem, qty: e.target.value })
           }
@@ -87,16 +97,19 @@ function EditForm({ item, itemSaveHandler, closeHandler }) {
         <Label htmlFor="price">Price (USD)</Label>
         <Input
           id="price"
-          placeholder={item.price}
+          value={updatedItem.price}
           type="number"
           min="0"
-          onChange={(e) =>
+          onKeyDown={validateKey}
+          onChange={(e) =>{
             setUpdatedItem({ ...updatedItem, price: e.target.value })
+          }
+            
           }
         />
       </div>
 
-      <StyledButton title="Save" clickHandler={(e) => itemSaveHandler(e, updatedItem)} />
+      <StyledButton title="Save" clickHandler={() => itemSaveHandler(updatedItem)} />
       <CloseButton title="Close" clickHandler={closeHandler} />
     </Wrapper>
   );
