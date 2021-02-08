@@ -250,7 +250,7 @@ function App() {
 
           <FlexItem>
             <H2>Crossed Off</H2>
-            <p>{visibleRemovedItems.length ? "Click on an item to cross it out." : "No crossed off items to show."}</p>
+            <p>{visibleRemovedItems.length ? "Click on an item to return it to pending." : "No crossed off items to show."}</p>
             <ListGroup
               title=""
               items={visibleRemovedItems}
