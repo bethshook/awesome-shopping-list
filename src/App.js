@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import './App.css';
+import "./App.css";
 import ListGroup from "./components/ListGroup";
 import breakpoints from "./utils/breakpoints";
 
@@ -8,7 +8,7 @@ const Header = styled.header`
   position: fixed;
   top: 0;
   width: 100%;
-  background: ${({theme}) => theme.colors.blue};
+  background: ${({ theme }) => theme.colors.blue};
   height: 10rem;
   display: flex;
   align-items: center;
@@ -17,14 +17,14 @@ const Header = styled.header`
 
 const Intro = styled.p`
   text-align: center;
-  color: ${({theme}) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.white};
 `;
 
 const Wrapper = styled.main`
   padding: 10rem 2rem 2rem;
   max-width: 70rem;
   margin: 0 auto;
-  
+
   @media (min-width: ${breakpoints.lg}) {
     width: 80%;
   }
@@ -42,7 +42,7 @@ const FlexSection = styled.section`
 
 const FlexItem = styled.div`
   flex: 1;
-  
+
   @media (min-width: ${breakpoints.md}) {
     margin: 0 3rem;
   }
@@ -59,8 +59,8 @@ const InputGroup = styled(FlexItem)`
 
 const SubtotalLabel = styled.span`
   font-weight: 700;
-  color: ${({theme}) => theme.colors.orangered};
-  margin-right: .5rem;
+  color: ${({ theme }) => theme.colors.orangered};
+  margin-right: 0.5rem;
 `;
 
 const Subtotal = styled.span`
@@ -69,14 +69,14 @@ const Subtotal = styled.span`
 
 const Input = styled.input`
   height: 2.5rem;
-  background: ${({theme}) => theme.colors.lightgray};
+  background: ${({ theme }) => theme.colors.lightgray};
   border: none;
   padding: 0 1rem;
   font-size: 1rem;
   margin-bottom: 2rem;
 
   &::placeholder {
-    color: ${({theme}) => theme.colors.gray};
+    color: ${({ theme }) => theme.colors.gray};
     font-size: 1rem;
   }
 
@@ -90,26 +90,26 @@ const Button = styled.button`
   border-radius: 0;
   border: none;
   padding: 0 1rem;
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  background: ${({theme}) => theme.colors.blue};
-  color: ${({theme}) => theme.colors.white};
+  background: ${({ theme }) => theme.colors.blue};
+  color: ${({ theme }) => theme.colors.white};
   cursor: pointer;
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: ${({theme}) => theme.colors.darkblue};
+    background: ${({ theme }) => theme.colors.darkblue};
   }
 `;
 
 const Link = styled.a`
-  color: ${({theme}) => theme.colors.lightyellow};
+  color: ${({ theme }) => theme.colors.lightyellow};
   font-weight: 700;
   text-decoration: none;
   transition: all 0.1s ease;
 
   &:hover {
-    color: ${({theme}) => theme.colors.white};
+    color: ${({ theme }) => theme.colors.white};
   }
 `;
 
@@ -118,11 +118,11 @@ const H1 = styled.h1`
   margin-bottom: 1rem;
   margin-top: 0;
   font-size: 2.5rem;
-  color: ${({theme}) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.white};
 `;
 
 const H2 = styled.h2`
-  color: ${({theme}) => theme.colors.darkblue}
+  color: ${({ theme }) => theme.colors.darkblue};
 `;
 
 function App() {
@@ -130,6 +130,7 @@ function App() {
   const [inputValue, setInputValue] = useState("");
   const [pendingItems, setPendingItems] = useState([]);
   const [visiblePendingItems, setVisiblePendingItems] = useState([]);
+  const [visibleRemovedItems, setVisibleRemovedItems] = useState([]);
   const [removedItems, setRemovedItems] = useState([]);
   const [categories, setCategories] = useState(["uncategorized"]);
   const [itemsByCategory, setItemsByCategory] = useState({ uncategorized: [] });
@@ -138,6 +139,7 @@ function App() {
   useEffect(() => {
     // Reset visible pending items on pending items change.
     setVisiblePendingItems(pendingItems);
+    setVisibleRemovedItems(removedItems);
 
     // Update subtotal on pending items change.
     let subtotalHolder = 0;
@@ -148,10 +150,12 @@ function App() {
   useEffect(() => {
     // Update sorted visible items when visible items changes.
     const categoryObj = {};
-    categories.forEach(cat => {
+    categories.forEach((cat) => {
       if (!categoryObj[cat]) categoryObj[cat] = [];
     });
-    visiblePendingItems.forEach((i) => categoryObj[i.category.toLowerCase()].push(i));
+    visiblePendingItems.forEach((i) =>
+      categoryObj[i.category.toLowerCase()].push(i)
+    );
     setItemsByCategory(categoryObj);
   }, [visiblePendingItems]);
 
@@ -160,12 +164,17 @@ function App() {
     setInputValue(input);
     if (!input) {
       setVisiblePendingItems(pendingItems);
+      setVisibleRemovedItems(removedItems);
     } else {
-      // Filter pending items for those that match search.
-      const matchingPending = pendingItems.filter((item) =>
+      // Filter pending and removed items for those that match search.
+      const matchingPending = pendingItems.filter(item =>
+        item.label.includes(input)
+      );
+      const matchingRemoved = removedItems.filter(item => 
         item.label.includes(input)
       );
       setVisiblePendingItems(matchingPending);
+      setVisibleRemovedItems(matchingRemoved);
     }
   };
 
@@ -201,66 +210,74 @@ function App() {
 
   return (
     <>
-    <Header>
-      <div>
-        <H1>StaxList</H1>
-        <Intro>
-          An OpenStax shopping list app by <Link href="https://github.com/bethshook" target="_blank">Beth Shook</Link>
-        </Intro>
-      </div>
-    </Header>
-    <Wrapper>
-      <FlexSection>
-        <InputGroup>
-          <Input
-            value={inputValue}
-            aria-label="Item name"
-            placeholder="Item name"
-            onChange={(e) => handleChange(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleAdd();
-            }}
-          />
-          <Button onClick={() => handleAdd()}>Create</Button>
-        </InputGroup>
-        <FlexItem>
-          <SubtotalLabel>Subtotal (USD):</SubtotalLabel> <Subtotal>${subtotal}.00</Subtotal>
-        </FlexItem>
-      </FlexSection>
+      <Header>
+        <div>
+          <H1>StaxList</H1>
+          <Intro>
+            An OpenStax shopping list app by{" "}
+            <Link href="https://github.com/bethshook" target="_blank">
+              Beth Shook
+            </Link>
+          </Intro>
+        </div>
+      </Header>
 
-      <FlexSection>
-        <FlexItem>
-          <H2>Pending</H2>
-          <p>Click on an item to cross it out.</p>
-          {categories.map((cat) =>
-            itemsByCategory[cat] && itemsByCategory[cat].length ? (
-              <ListGroup
-                key={cat}
-                title={cat}
-                items={itemsByCategory[cat]}
-                itemClickHandler={(item) => {
-                  setPendingItems(pendingItems.filter((i) => i !== item));
-                  setRemovedItems([...removedItems, item]);
-                }}
-                itemEditHandler={(newItem) => handleEdit(newItem)}
-              />
-            ) : null
-          )}
-        </FlexItem>
-        <FlexItem>
-          <H2>Crossed Off</H2>
-          <p>Click on an item to move it back to pending.</p>
-          <ListGroup
-            title=""
-            items={removedItems}
-            itemClickHandler={(item) => {
-              setRemovedItems(removedItems.filter((i) => i !== item));
-              setPendingItems([...pendingItems, item]);
-            }}
-          />
-        </FlexItem>
-      </FlexSection>
-    </Wrapper>
+      <Wrapper>
+        <FlexSection>
+          <InputGroup>
+            <Input
+              value={inputValue}
+              aria-label="Item name"
+              placeholder="Item name"
+              onChange={(e) => handleChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleAdd();
+              }}
+            />
+            <Button onClick={() => handleAdd()}>Create</Button>
+          </InputGroup>
+
+          <FlexItem>
+            <SubtotalLabel>Subtotal (USD):</SubtotalLabel>{" "}
+            <Subtotal>${subtotal}.00</Subtotal>
+          </FlexItem>
+        </FlexSection>
+
+        <FlexSection>
+          <FlexItem>
+            <H2>Pending</H2>
+            <p>Click on an item to cross it out.</p>
+            {categories.map((cat) =>
+              itemsByCategory[cat] && itemsByCategory[cat].length ? (
+                <ListGroup
+                  key={cat}
+                  title={cat}
+                  items={itemsByCategory[cat]}
+                  itemClickHandler={(item) => {
+                    setPendingItems(pendingItems.filter((i) => i !== item));
+                    setRemovedItems([...removedItems, item]);
+                  }}
+                  itemEditHandler={(newItem) => handleEdit(newItem)}
+                  isPending
+                />
+              ) : null
+            )}
+          </FlexItem>
+
+          <FlexItem>
+            <H2>Crossed Off</H2>
+            <p>Click on an item to move it back to pending.</p>
+            <ListGroup
+              title=""
+              items={visibleRemovedItems}
+              itemClickHandler={(item) => {
+                setRemovedItems(removedItems.filter((i) => i !== item));
+                setPendingItems([...pendingItems, item]);
+              }}
+            />
+          </FlexItem>
+        </FlexSection>
+      </Wrapper>
     </>
   );
 }

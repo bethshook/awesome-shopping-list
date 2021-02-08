@@ -8,6 +8,7 @@ const Wrapper = styled.div`
 
 const Heading = styled.h3`
   margin-top: 0;
+  color: ${({theme}) => theme.colors.yellow};
 `;
 
 const Input = styled.input`
@@ -97,7 +98,7 @@ function EditForm({ title, item, itemSaveHandler, closeHandler }) {
       />
       </div>
 
-      <Button onClick={() => itemSaveHandler(updatedItem)}>Save</Button>
+      <Button onClick={(e) => itemSaveHandler(e, updatedItem)}>Save</Button>
       <CloseButton onClick={() => closeHandler()}>Close</CloseButton>
     </Wrapper>
   );

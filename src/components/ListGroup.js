@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   margin-bottom: 4rem;
   background: ${({ theme }) => theme.colors.lightyellow};
 
-  @media (min-width: ${breakpoints.LG}) {
+  @media (min-width: ${breakpoints.lg}) {
     margin-bottom: 2rem;
   }
 `;
@@ -26,8 +26,8 @@ const List = styled.ul`
 `;
 
 const HeadingRow = styled.li`
-  font-size: .75rem;
-  padding-bottom: .25rem;
+  font-size: 0.75rem;
+  padding-bottom: 0.25rem;
   border-bottom: 1px solid ${({ theme }) => theme.colors.darkgray};
   font-weight: 700;
   display: flex;
@@ -38,6 +38,7 @@ const ListItem = styled.li`
   display: flex;
   justify-content: space-between;
   margin: 0.75rem 0;
+  text-decoration: ${(props) => (props.isPending ? "" : "line-through")};
 `;
 
 const PlainButton = styled.button`
@@ -95,7 +96,7 @@ const StyledModal = Modal.styled`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${(props) => props.theme.colors.darkblue};
+  background-color: ${({ theme }) => theme.colors.darkblue};
   width: 80%;
 
   @media (min-width: ${breakpoints.md}) {
@@ -104,9 +105,14 @@ const StyledModal = Modal.styled`
   }
 `;
 
-function ListGroup({ title, items, itemClickHandler, itemEditHandler }) {
+function ListGroup({
+  title,
+  items,
+  itemClickHandler,
+  itemEditHandler,
+  isPending,
+}) {
   const [isOpen, setIsOpen] = useState(false);
-
   const toggleModal = (e) => {
     setIsOpen(!isOpen);
   };
@@ -125,7 +131,6 @@ function ListGroup({ title, items, itemClickHandler, itemEditHandler }) {
     <Wrapper>
       {formattedTitle && <H3>{formattedTitle}</H3>}
       <List>
-
         <HeadingRow>
           <FlexGroup>
             <FixedSpan>Qty</FixedSpan>
@@ -138,14 +143,14 @@ function ListGroup({ title, items, itemClickHandler, itemEditHandler }) {
 
         {items.sort(sortByLabel).map((item) => (
           <React.Fragment key={item.id}>
-            <ListItem>
+            <ListItem isPending={isPending}>
               <FlexGroup>
                 <Emphasized>{item.qty}</Emphasized>
                 <ItemWrapper>
                   <Item onClick={() => itemClickHandler(item)}>
                     {item.label}
                   </Item>
-                  {typeof itemEditHandler === "function" ? (
+                  {isPending ? (
                     <>
                       <EditButton onClick={() => toggleModal()}>
                         edit
@@ -157,11 +162,11 @@ function ListGroup({ title, items, itemClickHandler, itemEditHandler }) {
                       >
                         <EditForm
                           item={item}
-                          itemSaveHandler={(updatedItem) => {
+                          itemSaveHandler={(e, updatedItem) => {
                             itemEditHandler(updatedItem);
-                            setIsOpen(false);
+                            toggleModal(e);
                           }}
-                          closeHandler={() => toggleModal()}
+                          closeHandler={toggleModal}
                         />
                       </StyledModal>
                     </>
@@ -182,6 +187,7 @@ ListGroup.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object),
   itemClickHandler: PropTypes.func,
   itemEditHandler: PropTypes.func,
+  isPending: PropTypes.bool,
 };
 
 ListGroup.defaultProps = {
@@ -189,6 +195,7 @@ ListGroup.defaultProps = {
   items: [],
   itemClickHandler: () => {},
   itemEditHandler: null,
+  isPending: false,
 };
 
 export default ListGroup;
