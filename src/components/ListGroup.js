@@ -3,13 +3,17 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import Modal from "styled-react-modal";
 import EditForm from "./EditForm";
+import breakpoints from "./../utils/breakpoints";
 
 const Wrapper = styled.div`
-  border: 1px solid lightgray;
-  border-radius: 4px;
-  box-shadow: 0px 0px 39px -9px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 10px 6px -6px #777;
   padding: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
+  background: ${({theme}) => theme.colors.lightyellow};
+
+  @media (min-width: ${breakpoints.LG}) {
+    margin-bottom: 2rem;
+  }
 `;
 
 const H3 = styled.h3`
@@ -23,6 +27,7 @@ const List = styled.ul`
 const ListItem = styled.li`
   display: flex;
   justify-content: space-between;
+  margin: .5rem 0;
 `;
 
 const PlainButton = styled.button`
@@ -35,6 +40,7 @@ const PlainButton = styled.button`
 
 const FlexGroup = styled.div`
     display: flex;
+    flex-grow: 1;
 `;
 
 const Item = styled(PlainButton)`
@@ -44,15 +50,35 @@ const Item = styled(PlainButton)`
 const ItemWrapper = styled.div`
     margin: 0 2rem;
     display: flex;
+    flex-grow: 1;
     align-items: flex-end;
+    justify-content: space-between;
 `;
 
 const EditButton = styled(PlainButton)`
-  margin-left: 0.5rem;
+  margin-left: 0.75rem;
   font-size: .75rem;
+  font-weight: 700;
+  color: ${({theme}) => theme.colors.orangered};
+  border-bottom: 1px solid transparent;
+  transition: border 0.1s linear;
+  &:hover {
+      border-color: ${({theme}) => theme.colors.orangered};
+  }
 `;
 
-const StyledModal = styled(Modal)``;
+const Emphasized = styled.span`
+  font-weight: 500;
+`;
+
+const StyledModal = styled(Modal)`
+  width: 20rem;
+  height: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${props => props.theme.colors.white};
+`;
 
 function ListGroup({ title, items, itemClickHandler, itemEditHandler }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -79,7 +105,7 @@ function ListGroup({ title, items, itemClickHandler, itemEditHandler }) {
           <React.Fragment key={item.id}>
             <ListItem>
               <FlexGroup>
-                {item.qty}
+                <Emphasized>{item.qty}</Emphasized>
                 <ItemWrapper>
                   <Item onClick={() => itemClickHandler(item)}>
                     {item.label}
@@ -98,7 +124,6 @@ function ListGroup({ title, items, itemClickHandler, itemEditHandler }) {
                           item={item}
                           itemSaveHandler={(updatedItem) => {
                             itemEditHandler(updatedItem);
-                            toggleModal();
                           }}
                           closeHandler={() => toggleModal()}
                         />

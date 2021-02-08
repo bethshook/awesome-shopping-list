@@ -2,43 +2,128 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import './App.css';
 import ListGroup from "./components/ListGroup";
+import breakpoints from "./utils/breakpoints";
 
-const BREAKPOINTS = {
-  SM: '480px',
-  MD: '768px',
-  LG: '1024px',
-};
+const Header = styled.header`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: ${({theme}) => theme.colors.blue};
+  height: 10rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Intro = styled.p`
+  text-align: center;
+  color: ${({theme}) => theme.colors.white};
+`;
 
 const Wrapper = styled.main`
-  padding: 0 2rem;
-  max-width: 80rem;
+  padding: 10rem 2rem 2rem;
+  max-width: 70rem;
   margin: 0 auto;
   
-  @media (min-width: ${BREAKPOINTS.LG}) {
+  @media (min-width: ${breakpoints.lg}) {
     width: 80%;
   }
 `;
 
 const FlexSection = styled.section`
-  @media (min-width: ${BREAKPOINTS.MD}) {
+  margin-top: 3rem;
+
+  @media (min-width: ${breakpoints.md}) {
     display: flex;
     justify-content: space-between;
-    margin: 0 -3rem;
+    margin: 3rem -3rem 0 -3rem;
   }
 `;
 
 const FlexItem = styled.div`
   flex: 1;
-  margin: 0 3rem;
+  
+  @media (min-width: ${breakpoints.md}) {
+    margin: 0 3rem;
+  }
 `;
 
-const Input = styled.input``;
-const Button = styled.button``;
+const InputGroup = styled(FlexItem)`
+  width: 100%;
+  display: flex;
+
+  @media (min-width: ${breakpoints.sm}) {
+    width: auto;
+  }
+`;
+
+const SubtotalLabel = styled.span`
+  font-weight: 700;
+  color: ${({theme}) => theme.colors.orangered};
+  margin-right: .5rem;
+`;
+
+const Subtotal = styled.span`
+  font-size: 1.5rem;
+`;
+
+const Input = styled.input`
+  height: 2.5rem;
+  background: ${({theme}) => theme.colors.lightgray};
+  border: none;
+  padding: 0 1rem;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+
+  &::placeholder {
+    color: ${({theme}) => theme.colors.darkblue};
+    font-size: 1rem;
+  }
+
+  @media (min-width: ${breakpoints.md}) {
+    margin-bottom: 0;
+  }
+`;
+
+const Button = styled.button`
+  height: 2.5rem;
+  border-radius: 0;
+  border: none;
+  padding: 0 1rem;
+  font-size: .75rem;
+  font-weight: 700;
+  background: ${({theme}) => theme.colors.blue};
+  color: ${({theme}) => theme.colors.white};
+  cursor: pointer;
+  transition: all .2s ease;
+
+  &:hover {
+    background: ${({theme}) => theme.colors.darkblue};
+  }
+`;
+
+const Link = styled.a`
+  color: ${({theme}) => theme.colors.lightgreen};
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.1s ease;
+
+  &:hover {
+    color: ${({theme}) => theme.colors.white};
+  }
+`;
 
 const H1 = styled.h1`
   text-align: center;
+  margin-bottom: 1rem;
+  margin-top: 0;
+  font-size: 2.5rem;
+  color: ${({theme}) => theme.colors.white};
 `;
-const H2 = styled.h2``;
+
+const H2 = styled.h2`
+  color: ${({theme}) => theme.colors.darkblue}
+`;
 
 function App() {
   const [itemCount, setItemCount] = useState(0);
@@ -63,7 +148,9 @@ function App() {
   useEffect(() => {
     // Update sorted visible items when visible items changes.
     const categoryObj = {};
-    categories.forEach((cat) => (categoryObj[cat] = []));
+    categories.forEach(cat => {
+      if (!categoryObj[cat]) categoryObj[cat] = [];
+    });
     visiblePendingItems.forEach((i) => categoryObj[i.category].push(i));
     setItemsByCategory(categoryObj);
   }, [visiblePendingItems]);
@@ -112,10 +199,18 @@ function App() {
   };
 
   return (
+    <>
+    <Header>
+      <div>
+        <H1>OpenList</H1>
+        <Intro>
+          An OpenStax shopping list app by <Link href="https://github.com/bethshook" target="_blank">Beth Shook</Link>
+        </Intro>
+      </div>
+    </Header>
     <Wrapper>
-      <H1>Awesome Shopping List</H1>
       <FlexSection>
-        <FlexItem>
+        <InputGroup>
           <Input
             value={inputValue}
             aria-label="Item name"
@@ -126,13 +221,16 @@ function App() {
             }}
           />
           <Button onClick={() => handleAdd()}>Create</Button>
+        </InputGroup>
+        <FlexItem>
+          <SubtotalLabel>Subtotal (USD):</SubtotalLabel> <Subtotal>${subtotal}.00</Subtotal>
         </FlexItem>
-        <FlexItem>Subtotal (USD): ${subtotal}.00</FlexItem>
       </FlexSection>
 
       <FlexSection>
         <FlexItem>
           <H2>Pending</H2>
+          <p>Click on an item to cross it out.</p>
           {categories.map((cat) =>
             itemsByCategory[cat] && itemsByCategory[cat].length ? (
               <ListGroup
@@ -150,6 +248,7 @@ function App() {
         </FlexItem>
         <FlexItem>
           <H2>Crossed Off</H2>
+          <p>Click on an item to move it back to pending.</p>
           <ListGroup
             title=""
             items={removedItems}
@@ -161,6 +260,7 @@ function App() {
         </FlexItem>
       </FlexSection>
     </Wrapper>
+    </>
   );
 }
 
