@@ -26,15 +26,15 @@ const Wrapper = styled.main`
   max-width: 70rem;
   margin: 0 auto;
 
-  @media (min-width: ${breakpoints.lg}) {
-    width: 80%;
+  @media (min-width: ${breakpoints.md}) {
+    width: 60%;
   }
 `;
 
 const FlexSection = styled.section`
   margin-top: 3rem;
 
-  @media (min-width: ${breakpoints.md}) {
+  @media (min-width: ${breakpoints.xl}) {
     display: flex;
     justify-content: space-between;
     margin: 3rem -3rem 0 -3rem;
@@ -81,7 +81,7 @@ const Input = styled.input`
     font-size: 1rem;
   }
 
-  @media (min-width: ${breakpoints.md}) {
+  @media (min-width: ${breakpoints.xl}) {
     margin-bottom: 0;
   }
 `;
@@ -230,7 +230,7 @@ function App() {
         <FlexSection>
           <FlexItem>
             <H2>Pending</H2>
-            <p>Click on an item to cross it out.</p>
+            <p>{visiblePendingItems.length ? "Click on an item to cross it out." : "No pending items to show."}</p>
             {categories.map((cat) =>
               itemsByCategory[cat] && itemsByCategory[cat].length ? (
                 <ListGroup
@@ -250,7 +250,7 @@ function App() {
 
           <FlexItem>
             <H2>Crossed Off</H2>
-            <p>Click on an item to move it back to pending.</p>
+            <p>{visibleRemovedItems.length ? "Click on an item to cross it out." : "No crossed off items to show."}</p>
             <ListGroup
               title=""
               items={visibleRemovedItems}
